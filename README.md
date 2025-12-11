@@ -48,7 +48,7 @@
 3. 构建生产（可选，若 `pdfjs-dist` 目标环境要求较高，建议先使用开发模式验证）：
    - `npm run build`
 
-## ⚙️ 配置（供应商与模型）
+## ⚙️ 配置（供应商、模型与接口地址）
 
 通过环境变量选择 AI 供应商与模型，无需改动代码：
 
@@ -62,11 +62,16 @@
   - OpenAI：`VITE_OPENAI_API_KEY` → `OPENAI_API_KEY` → `VITE_API_KEY` → `API_KEY`
   - Gemini：`VITE_GEMINI_API_KEY` → `GEMINI_API_KEY` → `VITE_API_KEY` → `API_KEY`
 
+- 接口地址（OpenAI 可配置 Base URL）：
+  - `VITE_OPENAI_BASE_URL` 或 `OPENAI_BASE_URL` 或通用 `VITE_BASE_URL`/`BASE_URL`
+  - 默认：`https://api.openai.com/v1`
+
 示例（使用 OpenAI）：
 
 ```bash
 VITE_AI_PROVIDER=openai
 VITE_OPENAI_API_KEY=sk-...
+VITE_OPENAI_BASE_URL=https://api.openai.com/v1
 VITE_MODEL=gpt-4o-mini
 ```
 

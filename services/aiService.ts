@@ -36,6 +36,19 @@ const resolveApiKey = (provider: string): string | undefined => {
   );
 };
 
+const resolveBaseUrl = (provider: string): string | undefined => {
+  if (provider === "openai") {
+    return (
+      getEnv("VITE_OPENAI_BASE_URL") ||
+      getEnv("OPENAI_BASE_URL") ||
+      getEnv("VITE_BASE_URL") ||
+      getEnv("BASE_URL") ||
+      "https://api.openai.com/v1"
+    );
+  }
+  return undefined;
+};
+
 const defaultModelFor = (provider: string): string => {
   if (provider === "openai") return getEnv("VITE_MODEL") || getEnv("MODEL") || "gpt-4o-mini";
   return getEnv("VITE_MODEL") || getEnv("MODEL") || "gemini-2.5-flash";
@@ -96,8 +109,9 @@ const callGemini = async (apiKey: string, model: string, prompt: string): Promis
   return (response as any).text;
 };
 
-const callOpenAI = async (apiKey: string, model: string, prompt: string): Promise<string> => {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+const callOpenAI = async (apiKey: string, baseUrl: string, model: string, prompt: string): Promise<string> => {
+  const url = `${baseUrl.replace(/\/+$/, "")}/chat/completions`;
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -132,28 +146,49 @@ export const generateKnowledgeGraph = async (
     throw new Error("API Key is missing. Configure API key via environment variables.");
   }
   const model = defaultModelFor(provider);
+  const baseUrl = resolveBaseUrl(provider);
   const prompt = buildPrompt(text, focus);
 
   let responseText: string | undefined;
   if (provider === "openai") {
-    responseText = await callOpenAI(apiKey, model, prompt);
+    responseText = await callOpenAI(apiKey, baseUrl!, model, prompt);
   } else {
     responseText = await callGemini(apiKey, model, prompt);
   }
   if (!responseText) {
     throw new Error("No data returned from provider");
   }
-  const rawData = JSON.parse(responseText) as { nodes: GraphNode[]; edges: any[] };
-  const nodeIds = new Set(rawData.nodes.map((n) => n.id));
-  const validEdges: GraphEdge[] = rawData.edges
+  const parsed: any = JSON.parse(responseText);
+  const nodes: GraphNode[] = Array.isArray(parsed?.nodes)
+    ? parsed.nodes
+    : Array.isArray(parsed?.data?.nodes)
+    ? parsed.data.nodes
+    : [];
+  const edgesRaw: any[] = Array.isArray(parsed?.edges)
+    ? parsed.edges
+    : Array.isArray(parsed?.data?.edges)
+    ? parsed.data.edges
+    : [];
+
+  if (!Array.isArray(nodes) || !Array.isArray(edgesRaw)) {
+    throw new Error("Provider returned invalid JSON: missing 'nodes' or 'edges'.");
+  }
+
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  const validEdges: GraphEdge[] = edgesRaw
     .filter((e) => nodeIds.has(e.source as string) && nodeIds.has(e.target as string))
     .map((e) => ({
       source: e.source as string,
       target: e.target as string,
       relation: e.relation as string,
     }));
+
+  if (nodes.length === 0 && validEdges.length === 0) {
+    throw new Error("Model output contains no nodes or edges. Adjust model or prompt.");
+  }
+
   return {
-    nodes: rawData.nodes,
+    nodes,
     edges: validEdges,
   };
 };
