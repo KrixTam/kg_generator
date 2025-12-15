@@ -54,7 +54,7 @@ const App: React.FC = () => {
         {/* Header Overlay */}
         <header className="absolute top-0 left-0 right-0 h-16 px-6 flex items-center justify-between z-10 pointer-events-none">
            <h1 className="text-xl font-bold text-slate-800 dark:text-white drop-shadow-md pointer-events-auto opacity-50 hover:opacity-100 transition-opacity">
-            Gemini KG<span className="text-indigo-500">.visualizer</span>
+            KG<span className="text-indigo-500">.visualizer</span>
            </h1>
            <div className="pointer-events-auto">
              <button 
