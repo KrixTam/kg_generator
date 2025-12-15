@@ -185,6 +185,13 @@ export const generateKnowledgeGraph = async (
 
   if (nodes.length === 0 && validEdges.length === 0) {
     throw new Error("Model output contains no nodes or edges. Adjust model or prompt.");
+    // console.log("Model output contains no nodes or edges. Adjust model or prompt.");
+    // return {
+    //   nodes: [
+    //     { id: "input", label: "无抽取结果", type: "Concept" }
+    //   ],
+    //   edges: []
+    // };
   }
 
   return {
