@@ -1,5 +1,6 @@
+
 import React, { useState, useRef } from 'react';
-import { Play, FileText, Loader2, Wand2, Upload, FileUp } from 'lucide-react';
+import { Play, FileText, Loader2, Wand2, Upload } from 'lucide-react';
 import { processFile } from '../services/fileService';
 
 interface InputSectionProps {
@@ -14,7 +15,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSample = () => {
-    const sample = `Elon Musk, the CEO of SpaceX and Tesla, announced a new mission to Mars. The announcement took place in Boca Chica, Texas. NASA has expressed interest in collaborating on the Starship project. Meanwhile, Tesla shares rose by 5% in New York trading.`;
+    const sample = `埃隆·马斯克（Elon Musk）是SpaceX和特斯拉（Tesla）的首席执行官，他宣布了一项新的火星任务。该声明在德克萨斯州的博卡奇卡（Boca Chica）发布。美国国家航空航天局（NASA）表示有兴趣在星舰（Starship）项目上进行合作。与此同时，特斯拉的股价在纽约交易中上涨了5%。`;
     setText(sample);
   };
 
@@ -27,10 +28,9 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
       const extractedText = await processFile(file);
       setText(extractedText);
     } catch (error) {
-      alert("Error reading file: " + (error as Error).message);
+      alert("读取文件错误: " + (error as Error).message);
     } finally {
       setIsFileProcessing(false);
-      // Reset input so same file can be selected again if needed
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -38,7 +38,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
-      onGenerate(text, focus || 'General');
+      onGenerate(text, focus || '通用');
     }
   };
 
@@ -51,10 +51,10 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
            <Wand2 className="text-indigo-600 dark:text-indigo-400" />
-           Graph Builder
+           图谱构建器
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-          Import a document (PDF, MD, HTML) or paste text to generate a knowledge graph.
+          导入文档（PDF, MD, HTML）或直接粘贴文本，AI将自动提取实体与关系并构建知识图谱。
         </p>
       </div>
 
@@ -62,7 +62,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
         <div className="flex-1 flex flex-col relative">
           <div className="flex justify-between items-center mb-2">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Source Content
+              原始文本内容
             </label>
             <button
               type="button"
@@ -71,7 +71,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
               className="text-xs flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium transition-colors disabled:opacity-50"
             >
               {isFileProcessing ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />}
-              Upload File
+              上传文档
             </button>
             <input 
               type="file" 
@@ -83,8 +83,8 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
           </div>
           
           <textarea
-            className="flex-1 w-full p-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none resize-none transition-all font-mono text-sm"
-            placeholder={isFileProcessing ? "Extracting text from file..." : "Paste text here or upload a file..."}
+            className="flex-1 w-full p-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none resize-none transition-all font-sans text-sm leading-relaxed"
+            placeholder={isFileProcessing ? "正在提取文件内容..." : "在此输入或粘贴文本，或点击上方上传文档..."}
             value={text}
             onChange={(e) => setText(e.target.value)}
             disabled={isProcessing || isFileProcessing}
@@ -101,12 +101,12 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
 
         <div>
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
-                Focus Area (Optional)
+                分析侧重点 (可选)
             </label>
             <input 
                 type="text" 
                 className="w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                placeholder="e.g. 'Financial relationships', 'Timeline', 'Locations'"
+                placeholder="例如：'财务往来'、'时间演变'、'人物关系'"
                 value={focus}
                 onChange={(e) => setFocus(e.target.value)}
                 disabled={isProcessing}
@@ -121,7 +121,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
             className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-2"
           >
             <FileText size={16} />
-            Sample
+            使用示例
           </button>
           
           <button
@@ -132,12 +132,12 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isProcessing })
             {isProcessing ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                Processing...
+                正在生成...
               </>
             ) : (
               <>
                 <Play size={16} />
-                Generate Graph
+                开始生成图谱
               </>
             )}
           </button>

@@ -1,5 +1,5 @@
 {
   "name": "Knowledge Graph Generator",
-  "description": "Extracts entities and relationships from documents to visualize knowledge graphs using Gemini 2.5 Flash and D3.js.",
+  "description": "Extracts entities and relationships from documents to visualize knowledge graphs using a configurable AI model and D3.js.",
   "requestFramePermissions": []
 }

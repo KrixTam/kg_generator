@@ -69,7 +69,6 @@ const ForceGraph: React.FC<ForceGraphProps> = ({ data, width = 800, height = 600
     const { width, height } = dimensions;
 
     // IMPORTANT: Deep copy data to prevent mutation of props by D3
-    // React Strict Mode calls effects twice, causing double mutation if we use props directly.
     const nodes = data.nodes.map(d => ({ ...d }));
     const edges = data.edges.map(d => ({ ...d }));
 
@@ -97,7 +96,7 @@ const ForceGraph: React.FC<ForceGraphProps> = ({ data, width = 800, height = 600
       .enter().append("marker")
       .attr("id", "arrow")
       .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 25) // Offset arrow from node center
+      .attr("refX", 25) 
       .attr("refY", 0)
       .attr("markerWidth", 6)
       .attr("markerHeight", 6)
@@ -217,7 +216,7 @@ const ForceGraph: React.FC<ForceGraphProps> = ({ data, width = 800, height = 600
           <span className="inline-block px-2 py-1 mt-2 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
             {selectedNode.type}
           </span>
-          <div className="mt-4 text-xs text-slate-500">
+          <div className="mt-4 text-[10px] text-slate-500 font-mono">
              ID: {selectedNode.id}
           </div>
         </div>
@@ -225,15 +224,15 @@ const ForceGraph: React.FC<ForceGraphProps> = ({ data, width = 800, height = 600
 
       <div className="relative flex-1 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 graph-container shadow-inner">
         
-        {/* Controls moved inside the graph container */}
+        {/* Controls */}
         <div className="absolute bottom-4 right-4 flex gap-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-2 rounded-lg shadow-md z-10 border border-slate-200 dark:border-slate-700">
-          <button onClick={handleZoomIn} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="Zoom In">
+          <button onClick={handleZoomIn} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="放大">
             <ZoomIn size={20} className="text-slate-600 dark:text-slate-300" />
           </button>
-          <button onClick={handleZoomOut} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="Zoom Out">
+          <button onClick={handleZoomOut} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="缩小">
             <ZoomOut size={20} className="text-slate-600 dark:text-slate-300" />
           </button>
-          <button onClick={handleResetZoom} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="Fit to Screen">
+          <button onClick={handleResetZoom} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors" title="重置视角">
               <Maximize size={20} className="text-slate-600 dark:text-slate-300" />
           </button>
         </div>
@@ -247,9 +246,9 @@ const ForceGraph: React.FC<ForceGraphProps> = ({ data, width = 800, height = 600
       </div>
       
       {data.nodes.length > 0 && (
-          <div className="text-xs text-slate-400 mt-2 flex justify-between px-2">
-            <span>Nodes: {data.nodes.length}</span>
-            <span>Edges: {data.edges.length}</span>
+          <div className="text-[10px] text-slate-400 mt-2 flex justify-between px-2 uppercase tracking-widest font-medium">
+            <span>节点: {data.nodes.length}</span>
+            <span>关系: {data.edges.length}</span>
           </div>
       )}
     </div>

@@ -34,6 +34,16 @@ export enum ProcessingStatus {
   PROCESSING = 'PROCESSING',
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
+  VERIFYING = 'VERIFYING',
+  OPTIMIZING = 'OPTIMIZING'
+}
+
+export interface VerificationResult {
+  validityScore: number; // 0-100
+  completenessScore: number; // 0-100
+  feedback: string[];
+  missingEntities: string[];
+  suggestions: string;
 }
 
 export interface GenerationConfig {
