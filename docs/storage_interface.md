@@ -1,37 +1,41 @@
 # 系统存储与接口说明 (System Storage & Interface)
 
-本应用采用前端状态驱动架构，所有数据存储均位于客户端内存中（React State），并通过标准化的 JSON 结构与 Gemini API 进行交互。
+本应用采用前端状态驱动架构，数据存储位于客户端内存（React State），并通过统一的 JSON 结构与可配置的 AI 推理接口进行交互（OpenAI 兼容的 Chat Completions）。
 
 ## 1. 核心数据结构 (Data Models)
 
 ### 1.1 知识图谱数据 (`GraphData`)
-这是系统的核心存储对象，用于 D3.js 渲染和导出。
-- `nodes: GraphNode[]`: 节点列表。
-  - `id`: 唯一标识符（字符串）。
-  - `label`: 显示文本。
-  - `type`: 实体类型（如：Person, Org, Location）。
-- `edges: GraphEdge[]`: 关系列表。
-  - `source`: 源节点 ID。
-  - `target`: 目标节点 ID。
-  - `relation`: 关系描述。
+用于 D3.js 渲染与导出：
+- `nodes: GraphNode[]`
+  - `id`: 唯一标识符（字符串）
+  - `label`: 显示文本
+  - `type`: 实体类型（如 Person/Org/Location）
+- `edges: GraphEdge[]`
+  - `source`: 源节点 ID
+  - `target`: 目标节点 ID
+  - `relation`: 关系描述
 
 ### 1.2 验证报告结果 (`VerificationResult`)
-存储由 Gemini 3 Pro 生成的质量评估数据。
-- `validityScore`: 有效性得分 (0-100)。
-- `completenessScore`: 完备性得分 (0-100)。
-- `feedback`: 定性分析建议列表。
-- `missingEntities`: 识别出的缺失实体。
-- `suggestions`: 具体的优化指导策略。
+由 AI 验证模块生成的质量评估数据：
+- `validityScore`: 有效性得分 (0-100)
+- `completenessScore`: 完备性得分 (0-100)
+- `feedback`: 定性分析建议列表
+- `missingEntities`: 建议补充的实体
+- `suggestions`: 具体的优化指导策略
 
 ## 2. 状态机管理 (`ProcessingStatus`)
-系统通过枚举值严格控制 UI 表现：
-- `IDLE`: 空闲状态，等待输入。
-- `PROCESSING`: 正在进行 AI 实体提取。
-- `VERIFYING`: 正在进行图谱一致性审计。
-- `OPTIMIZING`: 正在应用审计建议重构图谱。
-- `SUCCESS`: 最近一次操作成功。
-- `ERROR`: 发生异常（存储错误消息于 `errorMessage`）。
+用于驱动页面行为的枚举：
+- `IDLE`: 空闲状态
+- `PROCESSING`: AI 提取中
+- `VERIFYING`: 图谱审计中
+- `OPTIMIZING`: 正在根据建议优化
+- `SUCCESS`: 操作成功
+- `ERROR`: 操作失败（携带 `errorMessage`）
 
-## 3. 外部接口协议
-- **Input**: 原始文本 (String) + 分析侧重点 (String)。
-- **Output**: 符合特定 JSON Schema 的图谱数据，支持导出为 `.json` 文件以便导入 Neo4j。
+## 3. 外部接口协议与配置
+- 输入：原始文本 (String)，可选分析侧重点 (String)
+- 输出：符合统一 JSON Schema 的图谱数据，可导出为 `.json` 用于 Neo4j 等图数据库
+- 配置（环境变量）：
+  - `VITE_OPENAI_API_KEY`
+  - `VITE_OPENAI_BASE_URL`（默认 `https://api.openai.com/v1`）
+  - `VITE_MODEL`

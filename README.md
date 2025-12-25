@@ -1,37 +1,52 @@
-# Gemini 知识图谱构建器 (Gemini Knowledge Graph Builder)
+# 知识图谱构建器 (Knowledge Graph Generator)
 
-这是一个交互式 Web 应用程序，利用 **Google Gemini 3** 系列模型和 **D3.js** 将非结构化文本和文档转化为直观、可优化的知识图谱。
+一个交互式 Web 应用，利用可配置的 AI 推理模型和 D3.js，将非结构化文本转化为直观可编辑的知识图谱，并支持质量审计与一键优化。
 
-## 🌟 核心功能
+## 核心功能
 
-*   **AI 智能提取**：使用 `gemini-3-flash-preview` 毫秒级识别文本中的实体（节点）及其关系（边）。
-*   **多语种支持**：**原生支持中文提取**。自动识别输入语言，保持实体标签和关系描述的一致性，拒绝强制翻译。
-*   **文档导入**：内置 PDF (`pdfjs-dist`)、HTML 和 Markdown 的客户端解析。
-*   **深度验证与审计**：集成 `gemini-3-pro-preview` 专家系统，从**有效性**与**完备性**维度对图谱进行双重审计。
-*   **一键智能优化 (New)**：根据审计报告自动修正图谱，补全缺失信息，纠正逻辑偏差。
-*   **智能报告管理**：支持自定义验证弹窗，允许用户在“查看现有报告”与“重新审计”间自由切换。
-*   **交互式可视化**：基于 **D3.js** 的力导向图，支持物理仿真、缩放平移及导出 JSON。
+- AI 智能提取：从文本识别实体（节点）及其关系（边），生成结构化 JSON。
+- 多语种支持：保持原文语言，节点标签与关系不自动翻译。
+- 质量审计：对有效性与完备性进行评分，输出改进建议与缺失项。
+- 一键优化：根据审计建议重构图谱，补全关系与实体。
+- 可视化与导出：D3 力导向图交互展示，支持导出 JSON。
 
-## 🛠️ 技术栈
+## 技术栈
 
-*   **AI 模型**：Gemini 3 Flash (生成/优化), Gemini 3 Pro (验证)。
-*   **前端架构**：React 19 + TypeScript + Tailwind CSS。
-*   **数据可视化**：D3.js (Force Simulation)。
-*   **图标库**：Lucide React。
+- 前端：React 19 + TypeScript + Vite
+- 样式：Tailwind CSS v4（本地构建）
+- 可视化：D3.js
+- 图标库：Lucide React
+- AI 接入：OpenAI 兼容的 Chat Completions（通过环境变量配置模型与接口）
 
-## 📂 项目说明文档
+## 配置
 
-详细技术细节请参阅：
+在项目根目录创建或编辑 `.env`（或 `.env.local`）：
+
+```
+VITE_OPENAI_API_KEY=你的密钥
+VITE_OPENAI_BASE_URL=https://api.openai.com/v1
+VITE_MODEL=模型名称或标识
+```
+
+说明：
+- `VITE_OPENAI_API_KEY`：AI 服务的访问密钥（OpenAI 兼容）。
+- `VITE_OPENAI_BASE_URL`：接口基础地址（默认为 `https://api.openai.com/v1`）。
+- `VITE_MODEL`：模型标识（例如 `gpt-4o-mini`，或其他兼容模型）。
+
+## 项目文档
+
 - [系统存储与接口说明](./docs/storage_interface.md)
 - [系统处理逻辑说明](./docs/processing_logic.md)
 
-## 🚀 快速开始
+## 快速开始
 
-1.  **粘贴文本或上传文档**。
-2.  **开始生成图谱**：AI 将构建初步结构。
-3.  **验证图谱**：点击右上角进行质量审计，获取评分和改进建议。
-4.  **一键优化**：在验证面板中点击“一键优化”，AI 将根据建议重构图谱。
-5.  **导出结果**：保存为 JSON，兼容 Neo4j 等图数据库。
+- 开发：`npm run dev`
+- 构建：`npm run build`
+- 预览：`npm run preview`
 
----
-*使用 Google Gemini API 构建 ❤️*
+使用步骤：
+1. 粘贴文本
+2. 生成图谱
+3. 验证图谱（质量审计）
+4. 一键优化
+5. 导出为 JSON（可导入至 Neo4j 等图数据库）
