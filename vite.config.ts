@@ -10,8 +10,14 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
+      optimizeDeps: {
+        exclude: ['pdfjs-dist'],
+        esbuildOptions: {
+          target: 'es2022'
+        }
+      },
       build: {
-        target: 'esnext'
+        target: 'es2022'
       },
       define: {
         'process.env.AI_PROVIDER': JSON.stringify(env.VITE_AI_PROVIDER),
