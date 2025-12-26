@@ -19,12 +19,6 @@ export default defineConfig(({ mode }) => {
       build: {
         target: 'es2022'
       },
-      define: {
-        'process.env.AI_PROVIDER': JSON.stringify(env.VITE_AI_PROVIDER),
-        'process.env.OPENAI_API_KEY': JSON.stringify(env.VITE_OPENAI_API_KEY),
-        'process.env.OPENAI_BASE_URL': JSON.stringify(env.VITE_OPENAI_BASE_URL),
-        'process.env.MODEL': JSON.stringify(env.VITE_MODEL)
-      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

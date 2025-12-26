@@ -1,6 +1,6 @@
 # 系统存储与接口说明 (System Storage & Interface)
 
-本应用采用前端状态驱动架构，数据存储位于客户端内存（React State），并通过统一的 JSON 结构与可配置的 AI 推理接口进行交互（OpenAI 兼容的 Chat Completions）。
+本应用采用前端状态驱动架构，数据存储位于客户端内存（React State）。AI 推理通过后端（Python + FastAPI + OpenAI SDK）提供的统一 API 完成，前端仅调用后端，不携带模型或密钥配置。
 
 ## 1. 核心数据结构 (Data Models)
 
@@ -32,10 +32,13 @@
 - `SUCCESS`: 操作成功
 - `ERROR`: 操作失败（携带 `errorMessage`）
 
-## 3. 外部接口协议与配置
-- 输入：原始文本 (String)，可选分析侧重点 (String)
-- 输出：符合统一 JSON Schema 的图谱数据，可导出为 `.json` 用于 Neo4j 等图数据库
-- 配置（环境变量）：
-  - `VITE_OPENAI_API_KEY`
-  - `VITE_OPENAI_BASE_URL`（默认 `https://api.openai.com/v1`）
-  - `VITE_MODEL`
+## 3. 后端 API 与配置
+- API（后端）：
+  - `POST /api/generate` 请求体：`{ text: string, focus?: string }`；返回：`GraphData`
+  - `POST /api/verify` 请求体：`{ sourceText: string, graphData: GraphData }`；返回：`VerificationResult`
+  - `POST /api/optimize` 请求体：`{ sourceText: string, currentGraph: GraphData, suggestions: string }`；返回：`GraphData`
+- 配置（仅后端环境变量）：
+  - `OPENAI_API_KEY`
+  - `OPENAI_BASE_URL`（默认 `https://api.openai.com/v1`）
+  - `MODEL`
+  - 兼容旧变量名：`VITE_OPENAI_API_KEY`、`VITE_OPENAI_BASE_URL`、`VITE_MODEL`

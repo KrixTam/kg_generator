@@ -16,22 +16,33 @@
 - 样式：Tailwind CSS v4（本地构建）
 - 可视化：D3.js
 - 图标库：Lucide React
-- AI 接入：OpenAI 兼容的 Chat Completions（通过环境变量配置模型与接口）
+- 后端：Python + FastAPI + OpenAI Python SDK
+- AI 接入：OpenAI 兼容的 Chat Completions（后端配置）
 
-## 配置
+## 架构
 
-在项目根目录创建或编辑 `.env`（或 `.env.local`）：
+- 前端编译为静态页面，位于 `dist/`，由后端服务直接提供
+- 后端提供 API：
+  - `POST /api/generate`
+  - `POST /api/verify`
+  - `POST /api/optimize`
+- 前端仅调用后端 API，不传输模型或密钥相关配置
+
+## 后端配置
+
+将以下环境变量配置到后端运行环境：
 
 ```
-VITE_OPENAI_API_KEY=你的密钥
-VITE_OPENAI_BASE_URL=https://api.openai.com/v1
-VITE_MODEL=模型名称或标识
+OPENAI_API_KEY=你的密钥
+OPENAI_BASE_URL=https://api.openai.com/v1
+MODEL=模型名称或标识
 ```
 
 说明：
-- `VITE_OPENAI_API_KEY`：AI 服务的访问密钥（OpenAI 兼容）。
-- `VITE_OPENAI_BASE_URL`：接口基础地址（默认为 `https://api.openai.com/v1`）。
-- `VITE_MODEL`：模型标识（例如 `gpt-4o-mini`，或其他兼容模型）。
+- `OPENAI_API_KEY`：AI 服务的访问密钥（仅后端使用）
+- `OPENAI_BASE_URL`：接口基础地址（默认 `https://api.openai.com/v1`）
+- `MODEL`：模型标识（例如 `gpt-4o-mini` 或其他兼容模型）
+ - 兼容旧变量名：`VITE_OPENAI_API_KEY`、`VITE_OPENAI_BASE_URL`、`VITE_MODEL`（后端启动时将自动读取 `.env/.env.local`）
 
 ## 项目文档
 
@@ -40,9 +51,10 @@ VITE_MODEL=模型名称或标识
 
 ## 快速开始
 
-- 开发：`npm run dev`
-- 构建：`npm run build`
-- 预览：`npm run preview`
+- 前端构建：`npm run build`
+- 安装后端依赖：`pip install -r backend/requirements.txt`
+- 启动后端：`uvicorn backend.app:app --port 8000`
+- 访问：`http://localhost:8000/`
 
 使用步骤：
 1. 粘贴文本

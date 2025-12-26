@@ -5,3 +5,4 @@ package-lock.json
 .env.local
 .DS_Store
 dist
+__pycache__
